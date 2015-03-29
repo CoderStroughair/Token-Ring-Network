@@ -3,7 +3,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.util.ArrayList;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -16,7 +15,6 @@ import java.awt.Component;
 import java.awt.BorderLayout;
 
 public class Main {
-	@SuppressWarnings("deprecation")
 	public static void main(String args[]) throws Exception{
 		
 		/*
@@ -24,9 +22,9 @@ public class Main {
 		 */
 		JFrame frm;
 		JPanel Main_Screen;
-		JButton but_1,but_2,but_3,b4;
+		JButton but_1,but_2,but_3,but_4;
 		
-		final int initialP = 4444; // first port number
+		final int initialP = 49152; // first port number
 		
 		final ArrayList<Node> nodes = new ArrayList<Node>();
 		
@@ -41,7 +39,7 @@ public class Main {
 		Main_Screen.setBorder(new LineBorder(new Color(0, 0, 0)));
 
 
-		JSpinner num_nodes = new JSpinner();
+		final JSpinner num_nodes = new JSpinner();
 		num_nodes.setBounds(29, 62, 49, 37);
 		num_nodes.setAlignmentY(Component.TOP_ALIGNMENT);
 		num_nodes.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -50,7 +48,8 @@ public class Main {
 		but_1.setBounds(10, 1, 87, 57);
 		but_1.addActionListener(new ActionListener()
 		{ // Initialize initial nodes
-			public void actionPerformed(ActionEvent e) {
+			public void actionPerformed(ActionEvent e) 
+			{
 				for(int i=0; i<((int)num_nodes.getValue()); i++)
 				{
 					try 
@@ -83,8 +82,7 @@ public class Main {
 		but_2 = new JButton("START");
 		but_2.setBounds(107, 1, 107, 98);
 		but_2.addActionListener(new ActionListener() 
-		{
-			 // Start nodes 			 
+		{	 // Start nodes 			 
 			public void actionPerformed(ActionEvent e) 
 			{
 				try 
@@ -105,44 +103,46 @@ public class Main {
 		
 		but_3 = new JButton("KILL MONITOR");
 		but_3.setBounds(212, 1, 137, 98);
-		but_3.addActionListener(new ActionListener() {
-			/*
-			 * Kill the monitor node
-			 */
-			public void actionPerformed(ActionEvent e) {
-				for(int i=0; i<nodes.size(); i++){
+		but_3.addActionListener(new ActionListener() 
+		{	 // Kill the monitor node
+			public void actionPerformed(ActionEvent e) 
+			{
+				for(int i=0; i<nodes.size(); i++)
+				{
 					if(nodes.get(i).isMonitor) nodes.get(i).disconnect();	
 				}
 			}
 		});
 		Main_Screen.add(but_3);
 		
-		b4 = new JButton("Add");
-		b4.setBounds(265, 11, 75, 30);
-		b4.addActionListener(new ActionListener() {
-			
-			/*
-			 * Dynamically add a new node and reconfigure system
-			 */
-			public void actionPerformed(ActionEvent e) {
-				try {
+		but_4 = new JButton("Add");
+		but_4.setBounds(265, 11, 75, 30);
+		but_4.addActionListener(new ActionListener() 
+		{												 // Dynamically add a new node and reconfigure system. Currently not implemented
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
 					Node n = new Node(nodes.size(), initialP+nodes.size());
-					n.frm.move(nodes.size()*400, 100);
+					n.frm.setLocation(nodes.size()*400, 100);
 					n.start();
 					nodes.add(n);
-					for(int i=0; i<nodes.size()-1; i++){
+					for(int i=0; i<nodes.size()-1; i++)
+					{
 						nodes.get(i).setDownNeigh(nodes.get(i+1));
 					}
 					nodes.get(nodes.size()-1).setDownNeigh(nodes.get(0));
 					
-				} catch (Exception e1) {
+				} 
+				catch (Exception e1) 
+				{
 					e1.printStackTrace();
 				}
 			}
 		});
 		frm.getContentPane().add(Main_Screen, BorderLayout.CENTER);
 				
-		frm.setSize(350, 100);
+		frm.setSize(350, 200);
 		frm.setVisible(true);	
 	}
 }

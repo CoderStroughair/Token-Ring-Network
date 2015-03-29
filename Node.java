@@ -52,8 +52,8 @@ public class Node extends Thread{
 		waitingResponse = false;
 		port = p;
 		next_node = null;
-		ADDRESS = InetAddress.getLocalHost();
-		socket = new DatagramSocket(port);
+		ADDRESS = InetAddress.getLocalHost();				//Gets the MAC address
+		socket = new DatagramSocket(port);					//Initializes the Port
 		
 		this.timer = new Timer();
 		
@@ -156,10 +156,10 @@ public class Node extends Thread{
  	public void run(){
  		try{
  			
- 			if(isMonitor){
+ 			if(isMonitor)
  				gui_log.append("Monitor\n");
- 				startTimer();
- 			}else startTimer();
+ 			
+ 			startTimer();
  			
  			// Continue until the system is destroyed
 	 		while(true){
@@ -169,11 +169,14 @@ public class Node extends Thread{
 	 			else b2.setText("Turn On");
 	 			
 	 			// If the node is dead then it will act as a bypass relay
-	 			if(!isAlive){
+	 			if(!isAlive)
+	 			{
 	 				gui_log.append("Bypass relay - relaying frame\n");
 	 				timer.cancel();
 	 				relay(); 
-				}else{
+				}
+	 			else
+	 			{
 					
 					if(waitingToSend) gui_log.append("Waiting to send\n");
 					if(waitingResponse) gui_log.append("Waiting response\n");
@@ -191,14 +194,16 @@ public class Node extends Thread{
 					
 					// Frame received is a token
 					case Frame.TOKEN_TYPE:
-						if(isMonitor) {
-							gui_log.append("Token received\n");
-						}
+						if(isMonitor) 
+							gui_log.append("Token received\n");					
 						
-						if(waitingResponse){
+						if(waitingResponse)
+						{
 							waitingResponse= false;
 							gui_log.append("Sending failed\n");
-						}else if(waitingToSend){
+						}
+						else if(waitingToSend)
+						{
 							waitingToSend = false;
 							waitingResponse = true;
 							byte AC = 0x0;
@@ -209,8 +214,11 @@ public class Node extends Thread{
 							Frame f = new Frame(AC, DA, SA, data);
 							send(f);	
 							gui_log.append("Sending frame to "+desAddrToSend+" "+dataToSend+"\n");
-						}else{
-							if(isMonitor) gui_log.append("Token passed on to port" + next_node.getPort() +"\n");
+						}
+						else
+						{
+							if(isMonitor) 
+								gui_log.append("Token passed on to port" + next_node.getPort() +"\n");
 							send(current_frame);
 						}
 						
@@ -354,7 +362,8 @@ public class Node extends Thread{
  	/*
  	 * Method that receives a frame and stores it in current frame
  	 */
- 	private void receive() throws IOException, ClassNotFoundException{
+ 	private void receive() throws IOException, ClassNotFoundException
+ 	{
  		byte[] buf = new byte[BUF_SIZE];
  		DatagramPacket packet = new DatagramPacket(buf, BUF_SIZE);
  		socket.receive(packet);
