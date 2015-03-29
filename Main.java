@@ -13,6 +13,7 @@ import javax.swing.border.LineBorder;
 import java.awt.Color;
 import javax.swing.SpinnerNumberModel;
 import java.awt.Component;
+import java.awt.BorderLayout;
 
 public class Main {
 	@SuppressWarnings("deprecation")
@@ -25,10 +26,6 @@ public class Main {
 		JPanel Main_Screen;
 		JButton but_1,but_2,but_3,b4;
 		
-		/*
-		 * Number of initial nodes and first nodes port number
-		 */
-		final int numNodes = 3;
 		final int initialP = 4444; // first port number
 		
 		final ArrayList<Node> nodes = new ArrayList<Node>();
@@ -52,23 +49,25 @@ public class Main {
 		but_1 = new JButton("INITIALIZE");
 		but_1.setBounds(10, 1, 87, 57);
 		but_1.addActionListener(new ActionListener()
-		{
-
-			/*
-			 * Initialize initial nodes
-			 */
+		{ // Initialize initial nodes
 			public void actionPerformed(ActionEvent e) {
-				for(int i=0; i<numNodes; i++){
-					try {
+				for(int i=0; i<((int)num_nodes.getValue()); i++)
+				{
+					try 
+					{
 						Node n = new Node(i, initialP+i);
 						nodes.add(n);
-						nodes.get(i).frm.move(i*400, 100);
-					} catch (Exception e1) {
+						nodes.get(i).frm.setLocation(i*400, 100);
+					} 
+					catch (Exception e1) 
+					{
 						e1.printStackTrace();
 					}
+					
 				}
 				
-				for(int i=0; i<nodes.size()-1; i++){
+				for(int i=0; i<nodes.size()-1; i++)
+				{
 					nodes.get(i).setDownNeigh(nodes.get(i+1));
 				}
 				nodes.get(nodes.size()-1).setDownNeigh(nodes.get(0));
@@ -83,18 +82,21 @@ public class Main {
 		
 		but_2 = new JButton("START");
 		but_2.setBounds(107, 1, 107, 98);
-		but_2.addActionListener(new ActionListener() {
-			
-			/*
-			 * Start nodes 
-			 */
-			public void actionPerformed(ActionEvent e) {
-				try {
+		but_2.addActionListener(new ActionListener() 
+		{
+			 // Start nodes 			 
+			public void actionPerformed(ActionEvent e) 
+			{
+				try 
+				{
 					nodes.get(0).injectToken();
-				} catch (IOException e1) {
+				} 
+				catch (IOException e1) 
+				{
 					e1.printStackTrace();
 				}
-				for(int i=0; i<nodes.size(); i++){
+				for(int i=0; i<nodes.size(); i++)
+				{
 					nodes.get(i).start();
 				}
 			}
@@ -138,7 +140,7 @@ public class Main {
 				}
 			}
 		});
-		frm.getContentPane().add(Main_Screen);
+		frm.getContentPane().add(Main_Screen, BorderLayout.CENTER);
 				
 		frm.setSize(350, 100);
 		frm.setVisible(true);	

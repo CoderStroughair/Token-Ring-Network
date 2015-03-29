@@ -67,7 +67,7 @@ public class Node extends Thread{
 		frm.getRootPane().setWindowDecorationStyle(JRootPane.PLAIN_DIALOG);
 		pnl = new JPanel();
 		pnl.setLayout(null);
-		l1 = new JLabel("Desination Addr:");
+		l1 = new JLabel("Destination Addr:");
 		l1.setBounds(10, 20, 100, 30);
 		pnl.add(l1);
 		gui_da = new JTextField(20);
@@ -210,7 +210,7 @@ public class Node extends Thread{
 							send(f);	
 							gui_log.append("Sending frame to "+desAddrToSend+" "+dataToSend+"\n");
 						}else{
-							if(isMonitor) gui_log.append("Token passed on\n");
+							if(isMonitor) gui_log.append("Token passed on to port" + next_node.getPort() +"\n");
 							send(current_frame);
 						}
 						
