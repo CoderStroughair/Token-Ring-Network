@@ -21,27 +21,27 @@ public class Frame implements Serializable {
 	private static final byte SD=0x0, ED=0x0;
 	private static final int ADDRESS_SIZE = 3; 
 	private static final int DATA_SIZE = 4500;
-	private byte AC, FC, FCS, FS; // should gen FCS itself
+	private byte ACCESS_CONTROL, FRAME_CONTROL, CHECKSUM, FRAME_STATUS; // should gen FCS itself
 	private byte[] DA, SA, data;
 	
 	/*
 	 * Constructor to a return a blank frame
 	 */
 	public Frame(){
-		DA = new byte[ADDRESS_SIZE];
-		SA = new byte[ADDRESS_SIZE];
-		data = new byte[DATA_SIZE];
-		AC = 0x0;
-		FC = 0x0;
-		FCS = 0x0;
-		FS = 0x0;
+		DA = new byte[ADDRESS_SIZE];			//destination address
+		SA = new byte[ADDRESS_SIZE];			//sender address
+		data = new byte[DATA_SIZE];				//data being sent
+		ACCESS_CONTROL = 0x0;								//access control byte
+		FRAME_CONTROL = 0x0;								//frame control -  if bit 1 is set, its data, otherwise bits 2-7 refer to what kind of control frame it is
+		CHECKSUM = 0x0;								//frame checksum
+		FRAME_STATUS = 0x0;								//frame status - was it seen by the intended recipient
 	}
 	
 	/*
 	 * Constructor to return a frame with passed values
 	 */
 	public Frame(byte ac, byte[] da, byte[] sa, byte[] d){
-		AC = ac;
+		ACCESS_CONTROL = ac;
 		DA = da;
 		SA = sa;
 		data = d;
@@ -92,37 +92,45 @@ public class Frame implements Serializable {
 	 * Set FS to the appropriate value
 	 */
 	public void setFS(){
-		FS = (byte)0xCC;
+		FRAME_STATUS = (byte)0xCC;
 	}
 	
 	/*
 	 * Set the m bit in the access control byte
 	 */
 	public void setM(){
-		AC = 4;
+		ACCESS_CONTROL = 4;
 	}
 	
 	/*
-	 * Return true if the m bit in the acces control byte is set
+	 * Return true if the m bit in the access control byte is set
 	 */
 	public boolean mSet(){
-		return AC==4;
+		return ACCESS_CONTROL==4;
 	}
 	
 	/*
 	 * Returns an integer representing the type of this frame
-	 * @to-do: see if Enum would be better
 	 */
 	public int getType(){
-		if(AC == 0x10){  // What if m bit is set by monitor?
+		if(ACCESS_CONTROL == 0x10)
+		{  // What if m bit is set by monitor?
 			return TOKEN_TYPE;
-		}else if(FS == (byte)0xCC){
+		}
+		else if(FRAME_STATUS == (byte)0xCC)
+		{
 			return RESPONSE_TYPE;
-		}else if(AC == 0x18){
+		}
+		else if(ACCESS_CONTROL == 0x18)
+		{
 			return CLAIM_TOKEN;
-		}else if(AC == 0x22){
+		}
+		else if(ACCESS_CONTROL == 0x22)
+		{
 			return AMP_TYPE;
-		}else {
+		}
+		else 
+		{
 			return REGULAR_TYPE;
 		}
 	}
@@ -155,11 +163,11 @@ public class Frame implements Serializable {
 		String result = "\n=======================\nData is = " + new String(data, "UTF-8");
 		result += "\nDA = " + byteArrayToInt(DA);
 		result += "\nSA = " + byteArrayToInt(SA);
-		result += "\nAC = " + Byte.toString(AC);
-		result += "\nTESTING " + AC;
-		result += "\nFC = " + Byte.toString(FC);
-		result += "\nFCS = " + Byte.toString(FCS);
-		result += "\nFS = " + Byte.toString(FS);
+		result += "\nAC = " + Byte.toString(ACCESS_CONTROL);
+		result += "\nTESTING " + ACCESS_CONTROL;
+		result += "\nFC = " + Byte.toString(FRAME_CONTROL);
+		result += "\nFCS = " + Byte.toString(CHECKSUM);
+		result += "\nFS = " + Byte.toString(FRAME_STATUS);
 		result += "\nType = " + getType() + "\n=======================\n";
 		return result;
 	}

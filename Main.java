@@ -24,7 +24,7 @@ public class Main {
 		JPanel Main_Screen;
 		JButton but_1,but_2,but_3,but_4;
 		
-		final int initialP = 49152; // first port number
+		final int initialP = 9001; // first port number
 		
 		final ArrayList<Node> nodes = new ArrayList<Node>();
 		

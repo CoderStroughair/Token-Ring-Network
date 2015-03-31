@@ -11,6 +11,8 @@ import java.util.Timer;
 import javax.swing.*;
 import javax.swing.text.DefaultCaret;
 
+
+
 public class Node extends Thread{
  
 	/*
@@ -23,13 +25,14 @@ public class Node extends Thread{
 	private JScrollPane pane;
 	private JLabel l1;
 	private JButton b1,b2;
-	
+	private int m_timer = 4000;
+	private int nm_timer = 10000;
 	private Timer timer;
 	
 	private static int BUF_SIZE = 256;
 	private static InetAddress ADDRESS; // IP address of this node
 	public boolean isMonitor, isAlive, waitingToSend, waitingResponse;
-	private DatagramSocket socket;
+	DatagramSocket socket;
 	private int port; // This nodes port number
 	private Node next_node; // The node that is this nodes down stream neighbour
 	
@@ -52,8 +55,8 @@ public class Node extends Thread{
 		waitingResponse = false;
 		port = p;
 		next_node = null;
-		ADDRESS = InetAddress.getLocalHost();				//Gets the MAC address
-		socket = new DatagramSocket(port);					//Initializes the Port
+		ADDRESS = InetAddress.getLoopbackAddress();				//Gets the MAC address
+		socket = new DatagramSocket(port);						//Initializes the Port
 		
 		this.timer = new Timer();
 		
@@ -139,8 +142,8 @@ public class Node extends Thread{
 	 */
 	public void startTimer()
 	{
-		if(isMonitor) timer.schedule(new TimedTasks(this), 4000);
-		else timer.schedule(new TimedTasks(this), 7000);
+		if(isMonitor) timer.schedule(new TimedTasks(this), m_timer);
+		else timer.schedule(new TimedTasks(this), nm_timer);
 	}
 	
 	/*
@@ -151,7 +154,7 @@ public class Node extends Thread{
 	}
 	
 	/*
-	 * Threads main run fucntion
+	 * Threads main run function
 	 */
  	public void run(){
  		try{
@@ -182,7 +185,6 @@ public class Node extends Thread{
 					if(waitingResponse) gui_log.append("Waiting response\n");
 					
 					receive();
-					
 					Thread.sleep(2000); // Introduce a wait so it is easier for the human eye
 					
 					/*
@@ -194,7 +196,7 @@ public class Node extends Thread{
 					
 					// Frame received is a token
 					case Frame.TOKEN_TYPE:
-						if(isMonitor) 
+						//if(isMonitor) 
 							gui_log.append("Token received\n");					
 						
 						if(waitingResponse)
@@ -300,6 +302,7 @@ public class Node extends Thread{
 						if(isMonitor){
 							gui_log.append("Draining amp frame \n");
 						}else{
+							gui_log.append("Received AMP frame \n");
 							timer.cancel();
 							timer = new Timer();
 							startTimer();
